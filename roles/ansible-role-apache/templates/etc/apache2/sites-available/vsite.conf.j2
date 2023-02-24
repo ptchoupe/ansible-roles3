@@ -1,0 +1,12 @@
+<VirtualHost {{ item.vhost }}:{{ item.port }}>
+  ServerAdmin {{ item.server_admin }}
+  DocumentRoot {{ item.document_root }}
+
+  ErrorLog ${APACHE_LOG_DIR}/error.log
+  CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+  {{ item.extra | default('') }}
+
+</VirtualHost>
+
+# vim: syntax=apache ts=4 sw=4 sts=4 sr noet

@@ -1,0 +1,16 @@
+galaxy_info:
+  author: moreno robyn.
+  role_name: wordpress
+  description: Ansible role to install/configure wordpress
+  license: MIT
+  min_ansible_version: 1.2
+  platforms:
+    - name: EL
+      versions:
+        - 7
+        - 8
+
+  galaxy_tags:
+    - networking
+    - system
+dependencies: []

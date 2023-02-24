@@ -1,0 +1,34 @@
+---
+- hosts: localhost
+  connection: local
+  become: yes
+  vars:
+    RW_APT_CACHE_UPDATE: yes
+    APACHE:
+      use_default_config: False
+      addons:
+        php: True
+      listen:
+        - { ip: "localhost", port: 80 }
+        - { ip: "localhost", port: 443, ssl: true }
+      modules:
+        disable: []
+        enable:
+          - rewrite
+      sites:
+        - name: www.example.com
+          enabled: true
+          vhost: localhost
+          port: 80
+          document_root: /home/www
+          server_admin: info@example.com
+          extra: |+
+            <Directory "/home/www">
+                AllowOverride All
+                Require all granted
+            </Directory>
+  pre_tasks:
+    - name: Create document_root
+      file: path=/home/www state=directory
+  roles:
+    - { role: ansible-role-apache, tags: ['apache'], _apache: "{{ APACHE }}" }

@@ -1,0 +1,10 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+
+  vars:
+    postgres_repo_version: '11'
+
+  roles:
+    - role: Duologic.postgresql_repository

@@ -1,0 +1,43 @@
+---
+- name: Converge
+  hosts: instance
+  become: true
+  vars:
+    local_role_name: "ansible-role-nexus"
+    role_name: "{% if lookup('env','ROLE_NAME_FULL') %}{{ lookup('env','ROLE_NAME_FULL') }}{% else %}{{ local_role_name }}{% endif %}"
+    test_container_name: "{{ local_role_name }}-test"
+
+  pre_tasks:
+    - name: get docker host ip
+      become: true
+      shell: |
+        set -o pipefail
+        /sbin/ip route | awk '/default/ { print $3 }'
+      args:
+        executable: /bin/bash
+      register: dockerhost_ip
+      changed_when: false
+
+  tasks:
+    - name: setup nexus
+      import_role:
+        name: "{{ role_name }}"
+      vars:
+        service_nexus_host: "{{ dockerhost_ip.stdout }}"
+        docker_container_name: "{{ test_container_name }}"
+        docker_volumes: []
+        debug_hide: "false"
+        service_nexus_port: "10081"
+        service_nexus_user: "admin"
+        service_nexus_password: "admin123"
+        service_nexus_registry_port: "10000"
+        service_nexus_registry_mirror_port: "10001"
+        service_nexus_registry_group_port: "10002"
+        service_nexus_maven_repository_port: "10081"
+        docker_published_ports: [
+          "10000:5000",
+          "10081:8080",
+          "10001:5001",
+          "10002:5002"
+        ]
+        docker_host: "unix://tmp/docker.sock"

@@ -1,0 +1,6 @@
+{
+    "require": {
+      "johnpbloch/wordpress": "*",
+      "wp-cli/wp-cli-bundle": "*"
+    }
+}

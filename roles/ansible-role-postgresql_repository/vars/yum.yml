@@ -1,0 +1,146 @@
+---
+platforms:
+  ami201503__6: {d: false, f: ami201503-, i: yum, p: redhat/rhel-6, s: 5994, t: Amazon Linux AMI201503 6}
+  centos_5: {d: false, f: centos, i: yum, p: redhat/rhel-5, s: 1995, t: CentOS 5}
+  centos_6: {d: false, f: centos, i: yum, p: redhat/rhel-6, s: 1994, t: CentOS 6}
+  centos_7: {d: true, f: centos, i: yum, p: redhat/rhel-7, s: 1993, t: CentOS 7}
+  fedora_26: {d: true, f: fedora, i: dnf, p: fedora/fedora-26, s: 3974, t: Fedora 26}
+  fedora_27: {d: true, f: fedora, i: dnf, p: fedora/fedora-27, s: 3973, t: Fedora 27}
+  fedora_28: {d: true, f: fedora, i: dnf, p: fedora/fedora-28, s: 3972, t: Fedora 28}
+  fedora_29: {d: true, f: fedora, i: dnf, p: fedora/fedora-29, s: 3971, t: Fedora 29}
+  fedora_6: {d: false, f: fedora, i: yum, p: redhat/rhel-6, s: 3994, t: Fedora 6}
+  oraclelinux_6: {d: false, f: oraclelinux, i: yum, p: redhat/rhel-6, s: 4994, t: Oracle Enterprise Linux 6}
+  oraclelinux_7: {d: true, f: oraclelinux, i: yum, p: redhat/rhel-7, s: 4993, t: Oracle Enterprise Linux 7}
+  redhat_5: {d: false, f: redhat, i: yum, p: redhat/rhel-5, s: 995, t: Red Hat Enterprise Linux 5}
+  redhat_6: {d: false, f: redhat, i: yum, p: redhat/rhel-6, s: 994, t: Red Hat Enterprise Linux 6}
+  redhat_7: {d: true, f: redhat, i: yum, p: redhat/rhel-7, s: 993, t: Red Hat Enterprise Linux 7}
+  sl_5: {d: false, f: sl, i: yum, p: redhat/rhel-5, s: 2995, t: Scientific Linux 5}
+  sl_6: {d: false, f: sl, i: yum, p: redhat/rhel-6, s: 2994, t: Scientific Linux 6}
+  sl_7: {d: true, f: sl, i: yum, p: redhat/rhel-7, s: 2993, t: Scientific Linux 7}
+reporpms:
+  '10':
+    centos_6: {i386: 2, x86_64: 2}
+    centos_7: {ppc64le: 2, x86_64: 2}
+    fedora_26: {x86_64: 4}
+    fedora_27: {x86_64: 4}
+    fedora_28: {x86_64: 4}
+    fedora_29: {x86_64: 4}
+    fedora_6: {x86_64: 4}
+    oraclelinux_6: {i386: 2, x86_64: 2}
+    oraclelinux_7: {ppc64le: 2, x86_64: 2}
+    redhat_6: {i386: 2, x86_64: 2}
+    redhat_7: {ppc64le: 2, x86_64: 2}
+    sl_6: {i386: 2, x86_64: 2}
+    sl_7: {ppc64le: 2, x86_64: 2}
+  '11':
+    centos_6: {i386: 2, x86_64: 2}
+    centos_7: {ppc64le: 2, x86_64: 2}
+    fedora_26: {x86_64: 1}
+    fedora_27: {x86_64: 2}
+    fedora_28: {x86_64: 2}
+    fedora_29: {x86_64: 2}
+    oraclelinux_6: {i386: 2, x86_64: 2}
+    oraclelinux_7: {ppc64le: 1, x86_64: 2}
+    redhat_6: {i386: 2, x86_64: 2}
+    redhat_7: {ppc64le: 2, x86_64: 2}
+    sl_6: {i386: 2, x86_64: 2}
+    sl_7: {ppc64le: 1, x86_64: 2}
+  '7.3': {}
+  '7.4': {}
+  '8.0': {}
+  '8.1': {}
+  '8.2': {}
+  '8.3': {}
+  '8.4':
+    sl_6: {i386: 4, x86_64: 4}
+  '9.0':
+    centos_5: {i386: 5, x86_64: 5}
+    centos_6: {i386: 5, x86_64: 5}
+    oraclelinux_6: {i386: 5, x86_64: 5}
+    redhat_5: {i386: 5, x86_64: 5}
+    redhat_6: {i386: 5, x86_64: 5}
+    sl_5: {i386: 6, x86_64: 6}
+    sl_6: {i386: 6, x86_64: 6}
+  '9.1':
+    centos_5: {i386: 6, x86_64: 6}
+    centos_6: {i386: 6, x86_64: 7}
+    oraclelinux_6: {i386: 7, x86_64: 8}
+    redhat_5: {i386: 8, x86_64: 8}
+    redhat_6: {i386: 7, x86_64: 8}
+    sl_5: {i386: 8, x86_64: 8}
+    sl_6: {i386: 8, x86_64: 8}
+  '9.2':
+    centos_5: {i386: 8, x86_64: 8}
+    centos_6: {i386: 8, x86_64: 8}
+    centos_7: {x86_64: 3}
+    oraclelinux_6: {i386: 9, x86_64: 9}
+    redhat_5: {i386: 9, x86_64: 9}
+    redhat_6: {i386: 9, x86_64: 9}
+    redhat_7: {x86_64: 3}
+    sl_5: {i386: 10, x86_64: 10}
+    sl_6: {i386: 10, x86_64: 10}
+    sl_7: {x86_64: 3}
+  '9.3':
+    ami201503__6: {i386: 3, x86_64: 3}
+    centos_5: {i386: 3, x86_64: 3}
+    centos_6: {i386: 3, x86_64: 3}
+    centos_7: {x86_64: 3}
+    oraclelinux_6: {i386: 3, x86_64: 3}
+    oraclelinux_7: {x86_64: 3}
+    redhat_5: {i386: 3, x86_64: 3}
+    redhat_6: {i386: 3, x86_64: 3}
+    redhat_7: {x86_64: 3}
+    sl_5: {i386: 3, x86_64: 3}
+    sl_6: {i386: 3, x86_64: 3}
+    sl_7: {x86_64: 3}
+  '9.4':
+    ami201503__6: {i386: 3, x86_64: 3}
+    centos_5: {i386: 3, x86_64: 3}
+    centos_6: {i386: 3, x86_64: 3}
+    centos_7: {x86_64: 3}
+    fedora_26: {x86_64: 6}
+    fedora_27: {x86_64: 6}
+    fedora_28: {x86_64: 6}
+    fedora_29: {x86_64: 6}
+    fedora_6: {x86_64: 6}
+    oraclelinux_6: {i386: 3, x86_64: 3}
+    oraclelinux_7: {x86_64: 3}
+    redhat_5: {i386: 3, x86_64: 3}
+    redhat_6: {i386: 3, x86_64: 3}
+    redhat_7: {x86_64: 3}
+    sl_5: {i386: 3, x86_64: 3}
+    sl_6: {i386: 3, x86_64: 3}
+    sl_7: {x86_64: 3}
+  '9.5':
+    ami201503__6: {i386: 3, x86_64: 3}
+    centos_5: {i386: 3, x86_64: 3}
+    centos_6: {i386: 3, x86_64: 3}
+    centos_7: {ppc64le: 3, x86_64: 3}
+    fedora_26: {x86_64: 5}
+    fedora_27: {x86_64: 5}
+    fedora_28: {x86_64: 5}
+    fedora_29: {x86_64: 5}
+    fedora_6: {x86_64: 5}
+    oraclelinux_6: {i386: 3, x86_64: 3}
+    oraclelinux_7: {x86_64: 3}
+    redhat_5: {i386: 3, x86_64: 3}
+    redhat_6: {i386: 3, x86_64: 3}
+    redhat_7: {ppc64le: 3, x86_64: 3}
+    sl_5: {i386: 3, x86_64: 3}
+    sl_6: {i386: 3, x86_64: 3}
+    sl_7: {x86_64: 3}
+  '9.6':
+    ami201503__6: {i386: 2, x86_64: 2}
+    centos_6: {i386: 3, x86_64: 3}
+    centos_7: {ppc64le: 3, x86_64: 3}
+    fedora_26: {x86_64: 4}
+    fedora_27: {x86_64: 4}
+    fedora_28: {x86_64: 4}
+    fedora_29: {x86_64: 4}
+    fedora_6: {x86_64: 4}
+    oraclelinux_6: {i386: 3, x86_64: 3}
+    oraclelinux_7: {x86_64: 3}
+    redhat_6: {i386: 3, x86_64: 3}
+    redhat_7: {ppc64le: 3, x86_64: 3}
+    sl_6: {i386: 3, x86_64: 3}
+    sl_7: {x86_64: 3}

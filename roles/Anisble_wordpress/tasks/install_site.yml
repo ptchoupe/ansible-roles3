@@ -1,0 +1,4 @@
+- name: install wordpress site
+  shell: "wp core install --path={{wp_core_path}}/wordpress --url={{wp_domain}} --title='{{wp_site_name}}' --admin_name={{wp_site_admin}} --admin_email={{wp_admin_email}}  --admin_password={{wp_admin_pass}}"
+  become: true
+  become_user: apache

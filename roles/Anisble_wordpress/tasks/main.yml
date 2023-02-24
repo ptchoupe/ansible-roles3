@@ -1,0 +1,4 @@
+- include: install.yml
+- include: config.yml
+#- include: install_site.yml
+#- include: Fix_selinux.yml

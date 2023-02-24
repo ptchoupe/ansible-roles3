@@ -1,0 +1,79 @@
+---
+######################################
+# HANA Default Variables 
+#
+
+# Want extensive debugging
+debuglevel: 3
+
+# HANA Major and minor version
+# These variables are used in all sap-hana scripts
+# Thes variables are also set by sap-hana-mediacheck
+# Used in SAP Note 2235581 check
+sap_hana_version: "2" 
+sap_hana_sps: "0"
+
+# set to no,if you want the script to fail, if installed on an unsupported RHEL version according 
+# to SAP Note 2235581.
+sap_hana_preconfigure_no_strict_version_check: "yes"
+
+# SAP HANA requires minimum packages installed to be supported. These min levels are listed in SAP Note 2235581
+# Set to no if you want to ignore these requirements
+sap_hana_preconfigure_min_package_check: true
+
+# The installation part of this script will install missing packages and package groups
+# If the system is disconnected, not properly subscribed or repositories missing group
+# information set this to false and the missing packages are reported at the end of the playbook
+# if you set this to true, the installation part is run in check_mode only
+sap_hana_preconfigure_installation_check_only: false
+
+# Set the following to false if you do not want to update the system to the latest release
+sap_hana_preconfigure_update: false
+
+# I do not want to boot by default
+# You can set this to true if you want to reboot after updating and before configuring the rest
+sap_hana_preconfigure_reboot_after_update: false
+
+# Reboot timeout. 
+# Large servers may take very long to reboot (Default: 1800s = 30min). 
+# you may want to change this according to your environment
+sap_hana_preconfigure_reboot_timeout: 1800
+
+###
+#
+# The following variables are optional.
+# If they are defined, the users sapadm and sapsys will already be created
+# This is necessary for installation of hostagent, but some customers require it at an earlier stage.
+#
+# sap_sapadm_uid:
+# sap_sapadm_pw_clear:
+# sap_sapsys_gid:
+# sap_hana_id_group_sapsys: not yet used
+# sap_hana_id_user_sapadm: not yet used
+
+##  HANA kernel parameters
+# [SAP Note 238241](https://launchpad.support.sap.com/#/notes/238241) defines kernel parameters that all Linux systems need to set. 
+# The parameters recomendation default is different dependant on the OS release. Hence the os dependant default setting is defined in 
+# ./vars/{{ansible_os_reelease}}.yml If you need to add or change parameters for your system copy these parameters from the vars file in
+# to your system ivariable definitions and change them in the sap_hana_preconnfigure_kernel_parameters variable
+
+sap_hana_preconfigure_kernel_parameters: "{{ sap_hana_preconfigure_kernel_parameters_default }}"
+
+#### The following parameters are for PPC LE only
+## add a list of interfaces where MTU size will be set to 9000
+## defaults to empty
+#sap_hana_preconfigure_ppcle_mtu9000_if: "{{ ansible_interfaces| difference(['lo']) }}" # all interfaces
+sap_hana_preconfigure_ppcle_mtu9000_if: ''
+## list where tso flag should be set 
+## defaults to all interfaces
+sap_hana_preconfigure_ppcle_tso_if: "{{ ansible_interfaces| difference(['lo']) }}"
+
+sap_hana_preconfigure_switch_to_tuned_profile_sap_hana: true
+
+sap_hana_preconfigure_use_tuned_where_possible: false
+
+sap_hana_preconfigure_modify_grub_cmdline_linux: false
+
+sap_hana_preconfigure_run_grub2_mkconfig: false
+
+...

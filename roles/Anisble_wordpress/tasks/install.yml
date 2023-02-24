@@ -1,0 +1,73 @@
+- name: ensure zip packages are installed
+  package:
+    name:
+      - unzip
+      - zip
+    state: present
+
+- name: ensure pagespeed repo is installed
+  yum:
+    name: https://extras.getpagespeed.com/release-latest.rpm
+    state: present 
+    disable_gpg_check: True
+    
+
+- name: create wordpress directory
+  file:
+    path: "{{wp_core_path}}"
+    state: directory
+    mode: '0755'
+    owner: apache
+    group: apache
+
+- name: copy composer install file
+  copy:
+    src: "composer.json"
+    dest: "{{wp_core_path}}/composer.json"
+
+- name: install wordpress | package
+  yum:
+    name: wordpress
+    enablerepo: "remi"
+
+- name: install wordpress-cli | package
+  yum:
+    name: wp-cli
+    enablerepo: "pagespeed"
+
+- name: ensure pagespeed repo is deleted
+  yum:
+    name: getpagespeed-extras-release
+    state: removed 
+    disable_gpg_check: True
+
+- name: change wordpress directory 
+  copy:
+    src: "/usr/share/wordpress/"
+    dest: "{{wp_core_path}}/wordpress"
+    mode: '0755'
+    owner: apache
+    group: apache
+    remote_src: True
+
+- name: Template wp-settings.php
+  template:
+    src: wp-config.php.j2
+    dest: "{{wp_core_path}}/wordpress/wp-config.php"
+    owner: apache
+    group: apache
+    mode: '0755'
+
+
+
+
+#- name: install wordpress | composer
+#  command: "'yes' |{{ composer_path }} install"
+# become: true
+# become_user: root
+# args:
+#   chdir: "{{wp_core_path}}"
+
+
+
+

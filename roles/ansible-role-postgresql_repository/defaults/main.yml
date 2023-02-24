@@ -1,0 +1,6 @@
+---
+postgres_repo_version: '11'
+
+# Only required for EL
+postgres_repo_platform: '{{ ansible_distribution|lower }}_{{ ansible_distribution_major_version }}'
+postgres_repo_arch: '{{ ansible_architecture }}'

@@ -1,0 +1,40 @@
+---
+- name: Install gnupg
+  apt: pkg=gnupg state=present
+  register: task_result
+  until: task_result is success
+  retries: 10
+  delay: 2
+
+- name: Install Postgresql APT repo key
+  apt_key:
+    url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+    state: present
+  register: task_result
+  until: task_result is success
+  retries: 10
+  delay: 2
+
+- name: Install Postgresql APT repo
+  apt_repository:
+    repo: deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_distribution_release }}-pgdg main
+    state: present
+
+- name: Set __postgresql_version fact
+  set_fact:
+    __postgresql_version: '{{ postgres_repo_version }}'
+
+- name: Set __postgresql_packages fact
+  set_fact:
+    __postgresql_packages:
+      - 'postgresql-{{ postgres_repo_version }}'
+      - 'libpq-dev'
+  when: not postgres_repo_version is match('^9.*')
+
+- name: Set __postgresql_packages fact
+  set_fact:
+    __postgresql_packages:
+      - 'postgresql-{{ postgres_repo_version }}'
+      - 'postgresql-contrib-{{ postgres_repo_version }}'
+      - 'libpq-dev'
+  when: postgres_repo_version is match('^9.*')

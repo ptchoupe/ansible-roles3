@@ -1,0 +1,90 @@
+---
+- name: Install Apache
+  apt:
+    pkg: "apache2"
+    state: present
+
+- name: Install Apache PHP addons
+  when: _apache.addons.php is defined
+  block:
+    - name: Set 18.04 php_module_pkg fact
+      set_fact:
+        php_module_pkg: "libapache2-mod-php7.2"
+      when: ansible_lsb.id|lower == "ubuntu" and ansible_distribution_version is version_compare('18.04', '==')
+
+    - name: Set 14.04 php_module_pkg fact
+      set_fact:
+        php_module_pkg: "libapache2-mod-php5"
+      when: ansible_lsb.id|lower == "ubuntu" and ansible_distribution_version is version_compare('14.04', '==')
+
+    - name: Install PHP module
+      apt:
+        pkg: "{{ php_module_pkg }}"
+        state: present
+
+- name: Stop Apache for Reconfiguration
+  service:
+    name: apache2
+    state: stopped
+
+- name: Set listen bindings
+  template:
+    src: etc/apache2/ports.conf.j2
+    dest: /etc/apache2/ports.conf
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Check if 000-default site is enabled
+  command: a2query -s 000-default
+  register: a2query
+  changed_when: false
+  failed_when: a2query.rc != 0 and a2query.rc != 32
+  check_mode: no
+
+- name: Activate default site
+  command: a2ensite 000-default
+  register: _a2ensite
+  changed_when: "'Enabling site 000-default' in _a2ensite.stdout"
+  when: _apache.use_default_config and a2query.rc == 32
+
+- name: Disable default site
+  command: a2dissite 000-default
+  register: _a2dissite
+  changed_when: "'Site 000-default disabled' in _a2dissite.stdout"
+  when: not _apache.use_default_config and a2query.rc == 0
+
+- name: Secure installation
+  include_tasks: secure_installation.yml
+
+- name: Disable Modules
+  apache2_module:
+    name: "{{ item }}"
+    state: absent
+  with_items: "{{ _apache.modules.disable }}"
+
+- name: Enable Modules
+  apache2_module:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ _apache.modules.enable }}"
+
+- name: Create sites
+  template:
+    src: "etc/apache2/sites-available/vsite.conf.j2"
+    dest: "/etc/apache2/sites-available/{{ item.name }}.conf"
+    owner: root
+    group: root
+    mode: 0644
+  with_items: "{{ _apache.sites }}"
+  when: _apache.sites is defined and  _apache.sites | length > 0
+  notify:
+    - Restart Apache
+
+# a2ensite and a2dissite do not have common output. Disabling no-changed-when rule.
+- name: Toogle sites # noqa no-changed-when
+  command: "{% if item.enabled == True %}a2ensite{% else %}a2dissite{% endif %} {{ item.name }}"
+  with_items: "{{ _apache.sites }}"
+  when: _apache.sites is defined and  _apache.sites | length > 0
+  notify:
+    - Restart Apache

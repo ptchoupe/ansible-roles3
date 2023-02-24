@@ -1,0 +1,2 @@
+---
+yum_repo_url: https://download.postgresql.org/pub/repos/yum/{{ postgres_repo_version }}/{{ platforms[postgres_repo_platform].p }}-{{ postgres_repo_arch }}/pgdg-{{ platforms[postgres_repo_platform].f }}{{ postgres_repo_version|regex_replace('\.','') }}-{{ postgres_repo_version }}-{{ reporpms[postgres_repo_version][postgres_repo_platform][postgres_repo_arch] }}.noarch.rpm

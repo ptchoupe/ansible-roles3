@@ -1,0 +1,24 @@
+---
+- name: Include YUM repo information
+  include_vars: '../vars/yum.yml'
+
+- name: Install Postgresql YUM repo
+  package: name={{ yum_repo_url }} state=present
+  register: task_result
+  until: task_result is success
+  retries: 10
+  delay: 2
+
+- name: Set __postgresql_* fact
+  set_fact:
+    postgresql_enablerepo: 'pgdg{{ postgres_repo_version|regex_replace("\.","") }}'
+    __postgresql_version: '{{ postgres_repo_version }}'
+    __postgresql_data_dir: '/var/lib/pgsql/{{ postgres_repo_version }}/data'
+    __postgresql_bin_path: '/usr/pgsql-{{ postgres_repo_version }}/bin'
+    __postgresql_config_path: '/var/lib/pgsql/{{ postgres_repo_version }}/data'
+    __postgresql_daemon: 'postgresql-{{ postgres_repo_version }}'
+    __postgresql_packages:
+      - 'postgresql{{ postgres_repo_version|regex_replace("\.","") }}'
+      - 'postgresql{{ postgres_repo_version|regex_replace("\.","") }}-server'
+      - 'postgresql{{ postgres_repo_version|regex_replace("\.","") }}-contrib'
+      - 'postgresql{{ postgres_repo_version|regex_replace("\.","") }}-libs'

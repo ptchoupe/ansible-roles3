@@ -1,0 +1,19 @@
+galaxy_info:
+  author: Lukas Pustina
+  description: Installs and configures apache
+  namespace: rheinwerk
+  role_name: apache
+  company: Rheinwerk
+  license: license (GPL)
+  min_ansible_version: 2.9.0
+  # binding interfaces in docker container does not work, skip molecule test
+  min_ansible_container_version: "X"
+  platforms:
+  - name: Ubuntu
+    versions:
+    - all
+  galaxy_tags:
+    - system
+    - http
+    - apache
+dependencies: []

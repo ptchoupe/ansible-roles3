@@ -1,0 +1,24 @@
+- name: change wordpress directory 
+  copy:
+    src: "/usr/share/wordpress/"
+    dest: "{{wp_core_path}}/wordpress"
+    mode: '0755'
+    owner: apache
+    group: apache
+    remote_src: True
+
+- name: Template wp-settings.php
+  template:
+    src: wp-config.php.j2
+    dest: "{{wp_core_path}}/wordpress/wp-config.php"
+    owner: apache
+    group: apache
+    mode: '0755'
+
+- name: Template wp-settings.php
+  template:
+    src: wordpress.conf.j2
+    dest: "/etc/httpd/conf.d/wordpress.conf"
+    owner: apache
+    group: apache
+    mode: '0755'

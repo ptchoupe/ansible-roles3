@@ -1,0 +1,10 @@
+{% for e in _apache.listen %}
+{% if e.ssl is defined %}
+<IfModule ssl_module>
+  Listen {{ e.ip }}:{{ e.port }}
+</IfModule>
+{% else %}
+Listen {{ e.ip }}:{{ e.port }}
+{% endif %}
+{% endfor %}
+

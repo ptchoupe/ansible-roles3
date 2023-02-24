@@ -1,0 +1,132 @@
+---
+- name: set fact
+  set_fact:
+    role_comment: "( {{ docker_container_name | default('nexus') }} )"
+    skip_password_reset: "false"
+
+- name: ensure container is started {{ role_comment }}
+  docker_container:
+    name: "{{ docker_container_name }}"
+    image: "{{ docker_image }}{% if docker_image %}:{% endif %}{{ docker_image_tag }}"
+    published_ports: "{{ docker_published_ports }}"
+    volumes: "{{ docker_volumes }}"
+    docker_host: "{{ docker_host }}"
+    env:
+      TZ: "{{ docker_timezone }}"
+  tags:
+    - docker-container
+
+- name: wait until service is ready {{ role_comment }}
+  uri:
+    url: "{{ nexus_url }}"
+    return_content: true
+    timeout: 5
+  register: service_console
+  until: service_console.content.find("Nexus Repository Manager") != -1
+  delay: "{{ wait_delay | default(5) }}"
+  retries: 360
+
+- name: test exected password
+  uri:
+    url: "{{ nexus_url_api_login }}"
+    method: "POST"
+    body:
+      username: "{{ nexus_user | b64encode }}"
+      password: "{{ nexus_password | b64encode }}"
+    body_format: "form-urlencoded"
+    timeout: 5
+    status_code:
+      - 204
+      - 403
+      - 500
+  ignore_errors: "true"
+  register: nexus_expected_password
+  delay: "{{ wait_delay | default(5) }}"
+
+- name: skip password reset if password already set
+  set_fact:
+    skip_password_reset: "true"
+  when:
+    - nexus_expected_password is defined
+    - nexus_expected_password.status is defined
+    - nexus_expected_password.status == 204
+
+- name: get generated nexus password
+  docker_execute:
+    docker_container: "{{ docker_container_name }}"
+    docker_exec_command: "cat /nexus-data/admin.password"
+    docker_host: "{{ docker_host }}"
+  register: new_nexus_password
+  when:
+    - not skip_password_reset
+
+- name: set changeAdminPassword script name
+  set_fact:
+    script_changeAdminPassword: "changeAdminPassword-{{ ansible_date_time.iso8601_micro | to_uuid }}"
+  when:
+    - not skip_password_reset
+
+- name: create changeAdminPassword script
+  uri:
+    url: "{{ nexus_url_api_script }}"
+    method: "POST"
+    user: "{{ nexus_user }}"
+    password: "{{ new_nexus_password.msg }}"
+    force_basic_auth: "true"
+    body:
+      name: "{{ script_changeAdminPassword }}"
+      content: "def user = security.securitySystem.getUser('{{ nexus_user }}'); \
+                security.securitySystem.updateUser(user); \
+                security.securitySystem.changePassword('{{ nexus_user }}','{{ nexus_password }}')"
+      type: "groovy"
+    body_format: "json"
+    return_content: "true"
+    status_code: 204
+    timeout: 5
+  register: nexus_change_password_create
+  delay: "{{ wait_delay | default(5) }}"
+  when:
+    - not skip_password_reset
+
+- name: run changeAdminPassword script
+  uri:
+    url: "{{ nexus_url_api_script }}/{{ script_changeAdminPassword }}/run"
+    method: "POST"
+    user: "{{ nexus_user }}"
+    password: "{{ new_nexus_password.msg }}"
+    force_basic_auth: "true"
+    headers:
+      Content-Type: "text/plain"
+    timeout: 5
+    status_code: 200
+  register: nexus_change_password_create_run
+  delay: "{{ wait_delay | default(5) }}"
+  when:
+    - not skip_password_reset
+
+- name: delete changeAdminPassword script
+  uri:
+    url: "{{ nexus_url_api_script }}/{{ script_changeAdminPassword }}"
+    method: "DELETE"
+    user: "{{ nexus_user }}"
+    password: "{{ nexus_password }}"
+    force_basic_auth: "true"
+    timeout: 5
+    status_code: 204
+  register: nexus_change_password_create_delete
+  delay: "{{ wait_delay | default(5) }}"
+  when:
+    - not skip_password_reset
+
+- name: test if new password has been set
+  uri:
+    url: "{{ nexus_url_api_login }}"
+    method: "POST"
+    body:
+      username: "{{ nexus_user | b64encode }}"
+      password: "{{ nexus_password | b64encode }}"
+    body_format: "form-urlencoded"
+    timeout: 5
+    status_code: 204
+  when:
+    - not skip_password_reset

@@ -1,0 +1,10 @@
+---
+- name: Stop Apache
+  service:
+    name: apache2
+    state: stopped
+
+- name: Restart Apache
+  service:
+    name: apache2
+    state: restarted
